@@ -1,0 +1,25 @@
+# ============================================================
+# Yusuf-Grondona System – Streamlit Configuration
+# ============================================================
+
+[theme]
+primaryColor = "#2E8B57"
+backgroundColor = "#F5F5F5"
+secondaryBackgroundColor = "#E0E0E0"
+textColor = "#262730"
+font = "sans serif"
+
+[server]
+maxUploadSize = 10
+enableCORS = true
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+
+[runner]
+magicEnabled = true
+
+[client]
+showErrorDetails = true
+toolbarMode = "auto"
