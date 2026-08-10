@@ -1,0 +1,12 @@
+# Yusuf-Grondona IoT – Requirements
+# ==================================
+
+# MQTT
+paho-mqtt>=1.6.1
+
+# Raspberry Pi (optionnel)
+# Adafruit_DHT>=1.4.0
+# RPi.GPIO>=0.7.0
+
+# Utilitaires
+python-dotenv>=1.0.0
