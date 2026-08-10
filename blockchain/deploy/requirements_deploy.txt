@@ -1,0 +1,9 @@
+# Blockchain Deployment Requirements
+
+# Core
+web3>=6.11.1
+python-dotenv>=1.0.0
+
+# Optional
+# eth-account>=0.10.0
+# hexbytes>=0.3.0
