@@ -1,0 +1,173 @@
+# ============================================================
+# Docker Compose – Production
+# Yusuf-Grondona System
+# ============================================================
+#
+# Déploiement en production avec :
+# - API FastAPI
+# - Dashboard Streamlit
+# - PostgreSQL
+# - Nginx (reverse proxy)
+# - Monitoring (Prometheus + Grafana)
+#
+# Usage:
+#   docker-compose -f deploy/docker-compose.prod.yml up -d
+#
+# License: CC BY-SA 4.0 – Marc Daghar
+# ============================================================
+
+version: '3.8'
+
+services:
+  # ---- API ----
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.prod
+      target: api
+    container_name: yusuf-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://${DB_USER:-admin}:${DB_PASSWORD:-password}@postgres:5432/${DB_NAME:-yusuf_grondona}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - SEPOLIA_RPC_URL=${SEPOLIA_RPC_URL}
+      - ETH_MAINNET_RPC=${ETH_MAINNET_RPC}
+      - CORS_ORIGINS=${CORS_ORIGINS:-https://admin.yusuf-grondona.com}
+    volumes:
+      - ../data:/app/data
+      - ../logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - yusuf-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ---- Dashboard ----
+  dashboard:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.prod
+      target: dashboard
+    container_name: yusuf-dashboard
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - yusuf-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ---- PostgreSQL ----
+  postgres:
+    image: postgres:15-alpine
+    container_name: yusuf-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_NAME:-yusuf_grondona}
+      - POSTGRES_USER=${DB_USER:-admin}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-admin} -d ${DB_NAME:-yusuf_grondona}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - yusuf-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ---- Nginx (Reverse Proxy) ----
+  nginx:
+    image: nginx:alpine
+    container_name: yusuf-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ../static:/usr/share/nginx/html/static:ro
+    depends_on:
+      - api
+      - dashboard
+    networks:
+      - yusuf-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ---- Backup (cron) ----
+  backup:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.prod
+      target: backup
+    container_name: yusuf-backup
+    restart: unless-stopped
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-eu-west-3}
+      - S3_BUCKET=${S3_BUCKET:-yusuf-backup}
+      - BACKUP_INTERVAL=${BACKUP_INTERVAL:-86400}
+    volumes:
+      - postgres_data:/backup/data
+      - ../data:/backup/app_data
+    depends_on:
+      - postgres
+    networks:
+      - yusuf-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ---- Volumes ----
+volumes:
+  postgres_data:
+    driver: local
+
+# ---- Networks ----
+networks:
+  yusuf-network:
+    driver: bridge
+    name: yusuf-network
