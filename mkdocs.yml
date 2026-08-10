@@ -1,0 +1,121 @@
+site_name: Yusuf-Grondona Monetary System
+site_description: Documentation officielle du système monétaire bimétallique Yusuf-Grondona
+site_author: Marc Daghar
+site_url: https://barberoussedine.github.io/yusuf-grondona-system
+repo_url: https://github.com/barberoussedine/yusuf-grondona-system
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: green
+      accent: gold
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: green
+      accent: gold
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+  language: fr
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/barberoussedine/yusuf-grondona-system
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/
+
+nav:
+  - Accueil: index.md
+  - Guide d'installation: installation.md
+  - Architecture: architecture.md
+  - Modèle économique:
+    - Nuqud / Fulus: economy/nuqud-fulus.md
+    - Grondona CRD: economy/grondona.md
+    - Hisba: economy/hisba.md
+    - Zakat: economy/zakat.md
+  - API Reference:
+    - Authentification: api/auth.md
+    - Taux de change: api/exchange.md
+    - ESG: api/esg.md
+    - CRD: api/crd.md
+    - Transactions: api/transactions.md
+  - Blockchain:
+    - Contrats: blockchain/contracts.md
+    - DAO: blockchain/dao.md
+    - MultiSig: blockchain/multisig.md
+    - Carbon Credits: blockchain/carbon.md
+    - Zakat Tracker: blockchain/zakat.md
+  - SDK:
+    - Python: sdk/python.md
+    - JavaScript: sdk/javascript.md
+  - Déploiement:
+    - VPS: deployment/vps.md
+    - Docker: deployment/docker.md
+    - Streamlit Cloud: deployment/streamlit.md
+  - FAQ: faq.md
+  - Contribution: contributing.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      options:
+        custom_icons:
+          - material/extensions/emoji/icons
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - mdx_math
+  - footnotes
+  - tables
+  - attr_list
+  - def_list
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+  - git-revision-date-localized:
+      enable_creation_date: true
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: true
+            show_root_heading: true
+            show_root_toc_entry: false
+            heading_level: 2
+
+copyright: Copyright &copy; 2026 Marc Daghar – CC BY-SA 4.0
