@@ -1,0 +1,47 @@
+{
+  "name": "yusuf-grondona-sdk",
+  "version": "1.0.0",
+  "description": "SDK officiel pour l'intégration des partenaires BRI au système monétaire Yusuf-Grondona",
+  "main": "yusuf-sdk.js",
+  "types": "yusuf-sdk.d.ts",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint yusuf-sdk.js",
+    "build": "echo 'No build step required'",
+    "prepublishOnly": "npm run test"
+  },
+  "keywords": [
+    "yusuf",
+    "grondona",
+    "bri",
+    "islamic-finance",
+    "bimetallism",
+    "zakat",
+    "hisba",
+    "nuqud",
+    "fulus",
+    "blockchain",
+    "dao"
+  ],
+  "author": "Marc Daghar",
+  "license": "CC-BY-SA-4.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/barberoussedine/yusuf-grondona-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/barberoussedine/yusuf-grondona-system/issues"
+  },
+  "homepage": "https://docs.yusuf-grondona.com",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.55.0",
+    "@types/node": "^20.10.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
