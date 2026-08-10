@@ -1,0 +1,39 @@
+[run]
+# ============================================================
+# Coverage Configuration
+# Yusuf-Grondona System
+# ============================================================
+
+source = 
+    src
+    api
+    dashboard
+    blockchain
+    governance
+    simulation
+
+omit =
+    tests/*
+    */__pycache__/*
+    */venv/*
+    */site-packages/*
+    */migrations/*
+    */scripts/*
+    */deploy/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+    raise AssertionError
+    raise NotImplementedError
+    pass
+    import
+    @abstractmethod
+    def __repr__
+    def __str__
+
+fail_under = 60
+
+[html]
+directory = htmlcov
