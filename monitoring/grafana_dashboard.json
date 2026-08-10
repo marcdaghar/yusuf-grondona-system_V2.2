@@ -1,0 +1,330 @@
+{
+  "dashboard": {
+    "title": "Yusuf-Grondona System Monitoring",
+    "uid": "yusuf-grondona-dashboard",
+    "version": 1,
+    "timezone": "browser",
+    "editable": true,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Score ESG Global",
+        "type": "gauge",
+        "gridPos": {
+          "h": 8,
+          "w": 4,
+          "x": 0,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "red", "value": 0 },
+                { "color": "orange", "value": 40 },
+                { "color": "yellow", "value": 60 },
+                { "color": "green", "value": 80 }
+              ]
+            }
+          }
+        },
+        "targets": [
+          {
+            "expr": "yusuf_esg_global",
+            "legendFormat": "ESG Global",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Paramètre Λ (Stabilité)",
+        "type": "gauge",
+        "gridPos": {
+          "h": 8,
+          "w": 4,
+          "x": 4,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 1.5,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": 0 },
+                { "color": "yellow", "value": 0.7 },
+                { "color": "orange", "value": 0.9 },
+                { "color": "red", "value": 1.0 }
+              ]
+            }
+          }
+        },
+        "targets": [
+          {
+            "expr": "yusuf_lambda",
+            "legendFormat": "Λ",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Réserves Nuqud (g or)",
+        "type": "stat",
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 8,
+          "y": 0
+        },
+        "targets": [
+          {
+            "expr": "sum(yusuf_nuqud_reserve_grams)",
+            "legendFormat": "Total",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Vélocité Fulus",
+        "type": "stat",
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 8,
+          "y": 4
+        },
+        "targets": [
+          {
+            "expr": "yusuf_fulus_velocity",
+            "legendFormat": "Vélocité",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 1
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Évolution ESG",
+        "type": "timeseries",
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 12,
+          "y": 0
+        },
+        "targets": [
+          {
+            "expr": "yusuf_esg_global",
+            "legendFormat": "Global",
+            "refId": "A"
+          },
+          {
+            "expr": "yusuf_esg_environmental",
+            "legendFormat": "Environmental",
+            "refId": "B"
+          },
+          {
+            "expr": "yusuf_esg_social",
+            "legendFormat": "Social",
+            "refId": "C"
+          },
+          {
+            "expr": "yusuf_esg_governance",
+            "legendFormat": "Governance",
+            "refId": "D"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Transactions BRI",
+        "type": "stat",
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 0,
+          "y": 8
+        },
+        "targets": [
+          {
+            "expr": "rate(yusuf_transactions_total[5m])",
+            "legendFormat": "Taux",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Zakat Collectée (cumul)",
+        "type": "stat",
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 4,
+          "y": 8
+        },
+        "targets": [
+          {
+            "expr": "yusuf_zakat_collected_total",
+            "legendFormat": "Total",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "Entropie Logistique",
+        "type": "timeseries",
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 8,
+          "y": 8
+        },
+        "targets": [
+          {
+            "expr": "yusuf_logistics_entropy",
+            "legendFormat": "Entropie",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Détails ESG",
+        "type": "bargauge",
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 0,
+          "y": 12
+        },
+        "targets": [
+          {
+            "expr": "yusuf_esg_environmental",
+            "legendFormat": "Environnemental",
+            "refId": "A"
+          },
+          {
+            "expr": "yusuf_esg_social",
+            "legendFormat": "Social",
+            "refId": "B"
+          },
+          {
+            "expr": "yusuf_esg_governance",
+            "legendFormat": "Gouvernance",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100
+          }
+        }
+      },
+      {
+        "id": 10,
+        "title": "Réserves par Zone",
+        "type": "bargauge",
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 8,
+          "y": 14
+        },
+        "targets": [
+          {
+            "expr": "yusuf_nuqud_reserve_grams{zone=~'.+'}",
+            "legendFormat": "{{zone}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0
+          }
+        }
+      },
+      {
+        "id": 11,
+        "title": "Alertes Actives",
+        "type": "alertlist",
+        "gridPos": {
+          "h": 8,
+          "w": 4,
+          "x": 0,
+          "y": 18
+        },
+        "options": {
+          "alertName": "alertname",
+          "stateFilter": {
+            "firing": true,
+            "pending": true
+          }
+        }
+      }
+    ],
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ]
+    },
+    "tags": [
+      "yusuf-grondona",
+      "monitoring",
+      "esg",
+      "bri"
+    ]
+  },
+  "overwrite": true,
+  "folderUid": null
+}
