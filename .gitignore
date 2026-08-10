@@ -1,0 +1,97 @@
+# ============================================================
+# Yusuf-Grondona System – .gitignore
+# ============================================================
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+
+# ---------- Environment ----------
+.env
+.env.local
+.secrets
+.streamlit/secrets.toml
+
+# ---------- Database ----------
+*.db
+*.sqlite
+*.sqlite3
+data/
+*.log
+
+# ---------- Jupyter ----------
+.ipynb_checkpoints/
+*.ipynb
+
+# ---------- IDEs ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ---------- Results ----------
+results/*.png
+results/*.pdf
+results/*.csv
+results/*.json
+!results/.gitkeep
+
+# ---------- Deployment ----------
+deploy/ssl/
+deploy/letsencrypt/
+deploy/*.pem
+deploy/*.key
+deploy/*.crt
+*.tar.gz
+*.zip
+
+# ---------- Node ----------
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# ---------- Terraform ----------
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# ---------- Docker ----------
+*.pid
+docker-compose.override.yml
+
+# ---------- Temporary ----------
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~
