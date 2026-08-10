@@ -1,0 +1,95 @@
+# ============================================================
+# Dockerfile – Production
+# Yusuf-Grondona System
+# ============================================================
+#
+# Multi-stage build pour différents services.
+#
+# Usage:
+#   docker build -f deploy/Dockerfile.prod --target api -t yusuf-api .
+#   docker build -f deploy/Dockerfile.prod --target dashboard -t yusuf-dashboard .
+#
+# License: CC BY-SA 4.0 – Marc Daghar
+# ============================================================
+
+# ---- Base ----
+FROM python:3.10-slim AS base
+
+WORKDIR /app
+
+# Dépendances système
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copie des dépendances
+COPY requirements.txt requirements_full.txt ./
+RUN pip install --no-cache-dir -r requirements_full.txt
+
+# ---- API ----
+FROM base AS api
+
+COPY . .
+
+# Variables d'environnement
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# ---- API Light ----
+FROM base AS api-light
+
+COPY . .
+
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+CMD ["uvicorn", "api.main_light:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# ---- Dashboard ----
+FROM base AS dashboard
+
+COPY . .
+
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "dashboard/complete_system.py", "--server.port=8501", "--server.address=0.0.0.0"]
+
+# ---- Webhook Bridge ----
+FROM base AS webhook
+
+COPY monitoring/webhook_bridge.py ./monitoring/
+COPY api/ ./api/
+
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+CMD ["uvicorn", "monitoring.webhook_bridge:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# ---- Backup ----
+FROM alpine:latest AS backup
+
+RUN apk add --no-cache \
+    aws-cli \
+    postgresql-client \
+    curl \
+    bash \
+    tzdata
+
+COPY deploy/backup.sh /backup.sh
+RUN chmod +x /backup.sh
+
+CMD ["/backup.sh"]
