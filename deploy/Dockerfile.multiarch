@@ -1,0 +1,46 @@
+# ============================================================
+# Dockerfile – Multi-Architecture
+# Yusuf-Grondona System
+# ============================================================
+#
+# Support AMD64 (Intel/AMD) et ARM64 (Apple Silicon, Raspberry Pi)
+#
+# Usage:
+#   docker buildx build --platform linux/amd64,linux/arm64 \
+#     -f deploy/Dockerfile.multiarch -t yusuf-grondona:latest .
+#
+# License: CC BY-SA 4.0 – Marc Daghar
+# ============================================================
+
+# ---- Base ----
+FROM --platform=$TARGETPLATFORM python:3.10-slim AS base
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+WORKDIR /app
+
+# Dépendances système
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copie des dépendances
+COPY requirements.txt requirements_full.txt ./
+RUN pip install --no-cache-dir -r requirements_full.txt
+
+# ---- Application ----
+FROM base AS app
+
+# Copie du code source
+COPY . .
+
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+# Point d'entrée
+EXPOSE 8501
+
+CMD ["streamlit", "run", "dashboard/complete_system.py", "--server.port=8501", "--server.address=0.0.0.0"]
