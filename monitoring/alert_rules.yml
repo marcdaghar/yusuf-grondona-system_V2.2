@@ -1,0 +1,247 @@
+# ============================================================
+# Alert Rules – Yusuf-Grondona System
+# ============================================================
+# 
+# Règles d'alerte Prometheus pour le système.
+# 
+# License: CC BY-SA 4.0 – Marc Daghar
+# ============================================================
+
+groups:
+  # ---- Alertes ESG ----
+  - name: esg_alerts
+    interval: 30s
+    rules:
+      - alert: ESGScoreCritical
+        expr: yusuf_esg_global < 40
+        for: 5m
+        labels:
+          severity: critical
+          category: esg
+        annotations:
+          summary: "Score ESG critique (< 40)"
+          description: "Le score ESG global est tombé à {{ $value }}. Intervention urgente requise."
+          remediation: "Déclencher le CRD, renforcer les inspections, activer la Zakat d'urgence"
+
+      - alert: ESGScoreWarning
+        expr: yusuf_esg_global < 55
+        for: 10m
+        labels:
+          severity: warning
+          category: esg
+        annotations:
+          summary: "Score ESG en baisse (< 55)"
+          description: "Le score ESG est à {{ $value }}. Surveiller les indicateurs."
+          remediation: "Renforcer les audits ESG, surveiller la logistique"
+
+      - alert: ESGEnvironmentalCritical
+        expr: yusuf_esg_environmental < 35
+        for: 10m
+        labels:
+          severity: critical
+          category: esg
+        annotations:
+          summary: "Score Environnemental critique (< 35)"
+          description: "L'impact environnemental est critique. Vérifier les émissions."
+
+      - alert: ESGSocialCritical
+        expr: yusuf_esg_social < 30
+        for: 10m
+        labels:
+          severity: critical
+          category: esg
+        annotations:
+          summary: "Score Social critique (< 30)"
+          description: "Les indicateurs sociaux sont critiques. Vérifier le chômage et les inégalités."
+
+      - alert: ESGGovernanceCritical
+        expr: yusuf_esg_governance < 35
+        for: 10m
+        labels:
+          severity: critical
+          category: esg
+        annotations:
+          summary: "Score de Gouvernance critique (< 35)"
+          description: "La gouvernance est critique. Vérifier la transparence et la conformité hisba."
+
+  # ---- Alertes Monétaires ----
+  - name: monetary_alerts
+    interval: 30s
+    rules:
+      - alert: LambdaCritical
+        expr: yusuf_lambda > 0.9
+        for: 5m
+        labels:
+          severity: critical
+          category: monetary
+        annotations:
+          summary: "Paramètre Λ critique (> 0.9)"
+          description: "Λ = {{ $value }}. Risque d'effondrement monétaire."
+          remediation: "Déclencher CRD, réduire la dette, augmenter les réserves nuqud"
+
+      - alert: LambdaWarning
+        expr: yusuf_lambda > 0.7
+        for: 10m
+        labels:
+          severity: warning
+          category: monetary
+        annotations:
+          summary: "Paramètre Λ élevé (> 0.7)"
+          description: "Λ = {{ $value }}. Surveiller la dette et l'extraction low-entropie."
+
+      - alert: NuqudReserveLow
+        expr: yusuf_nuqud_reserve < 1000
+        for: 5m
+        labels:
+          severity: critical
+          category: monetary
+        annotations:
+          summary: "Réserves nuqud faibles (< 1000g)"
+          description: "Les réserves nuqud sont à {{ $value }}g. Risque de non-convertibilité."
+
+      - alert: FulusVelocityLow
+        expr: yusuf_fulus_velocity < 2
+        for: 15m
+        labels:
+          severity: warning
+          category: monetary
+        annotations:
+          summary: "Vélocité fulus faible (< 2 tours/an)"
+          description: "La monnaie est thésaurisée. Vélocité = {{ $value }}."
+
+  # ---- Alertes Logistiques ----
+  - name: logistics_alerts
+    interval: 30s
+    rules:
+      - alert: LogisticsEntropyHigh
+        expr: yusuf_logistics_entropy > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          category: logistics
+        annotations:
+          summary: "Entropie logistique élevée (> 0.8)"
+          description: "L'entropie logistique est à {{ $value }}. Risque de rupture."
+          remediation: "Vérifier les ports, les routes et les entrepôts"
+
+      - alert: LogisticsDelayHigh
+        expr: yusuf_logistics_delay_avg > 7
+        for: 10m
+        labels:
+          severity: warning
+          category: logistics
+        annotations:
+          summary: "Délai logistique élevé (> 7 jours)"
+          description: "Le délai moyen est de {{ $value }} jours."
+
+      - alert: PortClosed
+        expr: yusuf_port_operational == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: logistics
+        annotations:
+          summary: "Port fermé"
+          description: "Un port est fermé. Impact sur les importations."
+
+  # ---- Alertes Muhtassib ----
+  - name: muhtassib_alerts
+    interval: 30s
+    rules:
+      - alert: MuhtassibReputationLow
+        expr: yusuf_muhtassib_reputation < 30
+        for: 1h
+        labels:
+          severity: warning
+          category: muhtassib
+        annotations:
+          summary: "Réputation muhtassib faible (< 30)"
+          description: "Le muhtassib {{ $labels.muhtassib }} a une réputation de {{ $value }}."
+
+      - alert: FraudDetected
+        expr: yusuf_frauds_detected > 5
+        for: 1m
+        labels:
+          severity: critical
+          category: muhtassib
+        annotations:
+          summary: "Fraudes détectées (> 5)"
+          description: "{{ $value }} fraudes détectées. Inspection urgente requise."
+
+      - alert: InspectionComplianceLow
+        expr: yusuf_compliance_rate < 0.7
+        for: 10m
+        labels:
+          severity: warning
+          category: muhtassib
+        annotations:
+          summary: "Taux de conformité bas (< 70%)"
+          description: "Le taux de conformité est de {{ $value }}%."
+
+  # ---- Alertes Blockchain ----
+  - name: blockchain_alerts
+    interval: 30s
+    rules:
+      - alert: ZakatPendingHigh
+        expr: yusuf_zakat_pending > 1000
+        for: 1h
+        labels:
+          severity: warning
+          category: blockchain
+        annotations:
+          summary: "Zakat en attente élevée (> 1000)"
+          description: "{{ $value }} g de Zakat en attente de distribution."
+
+      - alert: CertificateExpiringSoon
+        expr: yusuf_certificate_days_left < 30
+        for: 1h
+        labels:
+          severity: warning
+          category: blockchain
+        annotations:
+          summary: "Certificat expire bientôt (< 30 jours)"
+          description: "Le certificat de {{ $labels.partner }} expire dans {{ $value }} jours."
+
+      - alert: CertificateExpired
+        expr: yusuf_certificate_days_left < 0
+        for: 1m
+        labels:
+          severity: critical
+          category: blockchain
+        annotations:
+          summary: "Certificat expiré"
+          description: "Le certificat de {{ $labels.partner }} est expiré."
+
+  # ---- Alertes Système ----
+  - name: system_alerts
+    interval: 30s
+    rules:
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: system
+        annotations:
+          summary: "Service indisponible"
+          description: "Le service {{ $labels.job }} est down depuis {{ $value }}."
+
+      - alert: HighMemoryUsage
+        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.1
+        for: 5m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "Mémoire faible (< 10%)"
+          description: "La mémoire disponible est de {{ $value }}%."
+
+      - alert: HighCPUUsage
+        expr: 100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "CPU élevé (> 80%)"
+          description: "L'utilisation CPU est de {{ $value }}%."
