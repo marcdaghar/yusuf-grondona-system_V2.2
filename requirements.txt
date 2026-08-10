@@ -1,0 +1,72 @@
+# Yusuf-Grondona System – Dépendances complètes
+
+# ============ Core ============
+numpy>=1.24.3
+pandas>=2.0.3
+matplotlib>=3.7.2
+scipy>=1.11.0
+
+# ============ API & Web ============
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+streamlit>=1.28.1
+plotly>=5.18.0
+requests>=2.31.0
+python-multipart>=0.0.6
+websockets>=12.0
+python-dotenv>=1.0.0
+pyyaml>=6.0
+httpx>=0.25.0
+
+# ============ Simulation (Mesa) ============
+mesa>=1.2.1
+
+# ============ Machine Learning ============
+scikit-learn>=1.3.0
+stable-baselines3>=2.0.0
+gymnasium>=0.29.1
+torch>=2.0.0
+prophet>=1.1.5
+tensorflow>=2.13.0
+joblib>=1.3.0
+
+# ============ Blockchain (Web3) ============
+web3>=6.11.1
+eth-account>=0.10.0
+paho-mqtt>=1.6.1
+
+# ============ Database ============
+sqlalchemy>=2.0.23
+psycopg2-binary>=2.9.9
+
+# ============ Monitoring ============
+prometheus-client>=0.19.0
+
+# ============ PDF Generation ============
+fpdf2>=2.7.0
+reportlab>=4.0.0
+
+# ============ Documentation ============
+mkdocs>=1.5.0
+mkdocs-material>=9.5.0
+
+# ============ Testing ============
+pytest>=7.4.3
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+selenium>=4.15.0
+webdriver-manager>=4.0.0
+
+# ============ Development ============
+black>=23.11.0
+ruff>=0.1.0
+mypy>=1.7.0
+pre-commit>=3.5.0
+
+# ============ AR/Mobile ============
+opencv-python>=4.8.0
+ultralytics>=8.0.0
+
+# ============ Case Studies ============
+openpyxl>=3.1.0
+xlrd>=2.0.0
