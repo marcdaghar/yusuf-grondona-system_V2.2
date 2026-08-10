@@ -1,0 +1,142 @@
+# ============================================================
+# Alertmanager Configuration – Yusuf-Grondona System
+# ============================================================
+# 
+# Configuration d'Alertmanager pour le routing des alertes.
+#
+# License: CC BY-SA 4.0 – Marc Daghar
+# ============================================================
+
+global:
+  # ---- SMTP pour les emails ----
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'alerts@yusuf-grondona.com'
+  smtp_auth_username: '${SMTP_USER}'
+  smtp_auth_password: '${SMTP_PASSWORD}'
+  smtp_require_tls: true
+
+  # ---- Slack (optionnel) ----
+  # slack_api_url: '${SLACK_WEBHOOK_URL}'
+
+  # ---- PagerDuty (optionnel) ----
+  # pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
+
+# ---- Routing des alertes ----
+route:
+  group_by: ['alertname', 'severity', 'category']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 4h
+  receiver: 'default'
+
+  # Routing par sévérité
+  routes:
+    - match:
+        severity: critical
+      receiver: 'critical'
+      continue: true
+      group_wait: 5s
+      repeat_interval: 1h
+
+    - match:
+        severity: warning
+      receiver: 'warning'
+      continue: true
+      group_wait: 10s
+      repeat_interval: 4h
+
+    - match:
+        category: esg
+      receiver: 'esg-team'
+      continue: true
+
+    - match:
+        category: monetary
+      receiver: 'monetary-team'
+      continue: true
+
+    - match:
+        category: logistics
+      receiver: 'logistics-team'
+      continue: true
+
+    - match:
+        category: muhtassib
+      receiver: 'muhtassib-team'
+      continue: true
+
+    - match:
+        category: blockchain
+      receiver: 'blockchain-team'
+      continue: true
+
+# ---- Receivers ----
+receivers:
+  # ---- Default ----
+  - name: 'default'
+    email_configs:
+      - to: 'admin@yusuf-grondona.com'
+        send_resolved: true
+
+  # ---- Critical alerts ----
+  - name: 'critical'
+    email_configs:
+      - to: 'critical@yusuf-grondona.com'
+        send_resolved: true
+    webhook_configs:
+      - url: 'http://webhook-bridge:8000/api/alerts'
+        send_resolved: true
+
+  # ---- Warning alerts ----
+  - name: 'warning'
+    email_configs:
+      - to: 'warnings@yusuf-grondona.com'
+        send_resolved: true
+
+  # ---- ESG Team ----
+  - name: 'esg-team'
+    email_configs:
+      - to: 'esg@yusuf-grondona.com'
+        send_resolved: true
+
+  # ---- Monetary Team ----
+  - name: 'monetary-team'
+    email_configs:
+      - to: 'monetary@yusuf-grondona.com'
+        send_resolved: true
+
+  # ---- Logistics Team ----
+  - name: 'logistics-team'
+    email_configs:
+      - to: 'logistics@yusuf-grondona.com'
+        send_resolved: true
+
+  # ---- Muhtassib Team ----
+  - name: 'muhtassib-team'
+    email_configs:
+      - to: 'muhtassib@yusuf-grondona.com'
+        send_resolved: true
+
+  # ---- Blockchain Team ----
+  - name: 'blockchain-team'
+    email_configs:
+      - to: 'blockchain@yusuf-grondona.com'
+        send_resolved: true
+
+# ---- Inhibition des alertes ----
+inhibit_rules:
+  # Ne pas envoyer d'alertes ESG si le système est critique
+  - source_match:
+      severity: 'critical'
+      alertname: 'ServiceDown'
+    target_match:
+      severity: 'warning'
+    equal: ['instance', 'job']
+
+  # Ne pas envoyer d'alertes de warning si les métriques ne sont pas disponibles
+  - source_match:
+      alertname: 'ServiceDown'
+    target_match:
+      category: 'monetary'
+      severity: 'warning'
+    equal: ['instance']
