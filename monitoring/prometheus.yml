@@ -1,0 +1,78 @@
+# ============================================================
+# Prometheus Configuration – Yusuf-Grondona System
+# ============================================================
+# 
+# Ce fichier configure Prometheus pour scraper les métriques
+# du système Yusuf-Grondona.
+#
+# License: CC BY-SA 4.0 – Marc Daghar
+# ============================================================
+
+global:
+  scrape_interval: 15s      # Intervalle de scraping par défaut
+  evaluation_interval: 15s  # Intervalle d'évaluation des alertes
+  external_labels:
+    project: "yusuf-grondona"
+    environment: "production"
+
+# ---- Fichiers de règles d'alerte ----
+rule_files:
+  - "alert_rules.yml"
+
+# ---- Configuration des cibles ----
+scrape_configs:
+  # ---- API principale ----
+  - job_name: 'yusuf-api'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['api:8000']
+        labels:
+          service: 'api'
+          tier: 'backend'
+    scrape_interval: 10s
+
+  # ---- Dashboard Streamlit ----
+  - job_name: 'yusuf-dashboard'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['dashboard:8501']
+        labels:
+          service: 'dashboard'
+          tier: 'frontend'
+    scrape_interval: 15s
+
+  # ---- Node Exporter (système) ----
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node_exporter:9100']
+        labels:
+          service: 'node'
+          tier: 'infrastructure'
+    scrape_interval: 30s
+
+  # ---- PostgreSQL Exporter (optionnel) ----
+  # - job_name: 'postgresql'
+  #   static_configs:
+  #     - targets: ['postgres_exporter:9187']
+  #       labels:
+  #         service: 'database'
+  #         tier: 'backend'
+  #   scrape_interval: 30s
+
+  # ---- Blockchain Node (optionnel) ----
+  # - job_name: 'ethereum-node'
+  #   static_configs:
+  #     - targets: ['geth:6060']
+  #       labels:
+  #         service: 'blockchain'
+  #         tier: 'backend'
+  #   scrape_interval: 30s
+
+  # ---- IoT MQTT Bridge (optionnel) ----
+  # - job_name: 'mqtt-bridge'
+  #   static_configs:
+  #     - targets: ['mqtt-bridge:8000']
+  #       labels:
+  #         service: 'iot'
+  #         tier: 'backend'
+  #   scrape_interval: 30s
